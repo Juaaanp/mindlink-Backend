@@ -2,15 +2,18 @@ package com.mindlink.models;
 
 import com.mindlink.Util.DoublyLinkedList.DoublyLinkedList;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
 @Data
+@Document(collection="students")
 public class Student {
-    Integer id;
+    @Id
+    String id;
     String name;
     String email;
     String password;
@@ -19,7 +22,7 @@ public class Student {
     DoublyLinkedList<Valoration> valorations;
     PriorityQueue<HelpRequest> helpRequests; // check in the future.
 
-    public Student(Integer id, String name, String email, String password) {
+    public Student(String id, String name, String email, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
