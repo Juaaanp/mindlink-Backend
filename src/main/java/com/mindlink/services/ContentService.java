@@ -46,6 +46,17 @@ public class ContentService {
         return null;
     }
 
+    //Posible opción:
+    // public Content update(String id, Content newContentData) {
+    //     return contentRepository.findById(id).map(existing -> {
+    //         existing.setTitle(newContentData.getTitle());
+    //         existing.setAuthor(newContentData.getAuthor());
+    //         existing.setType(newContentData.getType());
+    //         existing.setTopic(newContentData.getTopic());
+    //         return contentRepository.save(existing);
+    //     }).orElse(null);
+    // }
+
     public boolean delete (String id){
         if (contentRepository.findById(id).isPresent()){
             contentRepository.deleteById(id);

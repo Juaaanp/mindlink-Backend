@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+@Repository //Es necesario para la inyección de dependencias con @Autowired
 public class ContentRepository extends MongoRepositoryImpl<Content>{
     public ContentRepository() {
         super(Content.class);
