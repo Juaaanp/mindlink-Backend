@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.mindlink.Util.DoublyLinkedList.DoublyLinkedList;
 
 @Data
 @AllArgsConstructor
@@ -14,10 +17,10 @@ public class Content {
     @Id
     private String id;
     private String title;
-    private Student author;
+    private String authorId; //Ahora se referencia con id
     private String type;
     private String topic;
-    // valoration's list (Optional)
-
-
+    
+    @Transient
+    private DoublyLinkedList<Valoration> valorationsOwnList;
 }

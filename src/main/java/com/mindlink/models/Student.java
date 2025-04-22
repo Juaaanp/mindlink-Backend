@@ -1,13 +1,15 @@
 package com.mindlink.models;
 
-import com.mindlink.Util.DoublyLinkedList.DoublyLinkedList;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.mindlink.Util.DoublyLinkedList.DoublyLinkedList;
+import com.mindlink.Util.PriorityQueue.PriorityQueue;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.PriorityQueue;
 
 @Data
 @Document(collection="students")
@@ -18,9 +20,20 @@ public class Student {
     String email;
     String password;
     List<String> interests;
-    DoublyLinkedList<Content> publishedContents;
-    DoublyLinkedList<Valoration> valorations;
-    PriorityQueue<HelpRequest> helpRequests; // check in the future.
+
+    List<String> studyGroupsIdList; //Se necesita por ser relación m:m
+
+    @Transient
+    DoublyLinkedList<StudyGroup> studyGroupsOwnList;
+
+    @Transient
+    DoublyLinkedList<Content> publishedContentsOwnList; //Con el id del estudiante en la clase Content traigo todos los contenidos
+
+    @Transient
+    DoublyLinkedList<Valoration> valorationsOwnList;
+
+    @Transient
+    PriorityQueue<HelpRequest> helpRequestsOwnList;
 
     public Student(String id, String name, String email, String password) {
         this.id = id;
@@ -28,8 +41,5 @@ public class Student {
         this.email = email;
         this.password = password;
         this.interests = new LinkedList<>();
-        this.publishedContents = new DoublyLinkedList<>();
-        this.valorations = new DoublyLinkedList<>();
-        this.helpRequests = new PriorityQueue<>();
     }
 }

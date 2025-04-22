@@ -9,12 +9,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @AllArgsConstructor
 @Document(collection = "helpRequests")
-public class HelpRequest {
+public class HelpRequest implements Comparable<HelpRequest> {
     @Id
     private String id;
-    private Student student;
+    private String student; //Ahora se referencia con id
     private String topic;
     private Integer priorityLevel;
     private HelpRequestState state;
 
+
+    @Override
+    public int compareTo(HelpRequest o) {
+        return this.priorityLevel.compareTo(o.priorityLevel); 
+    }
 }

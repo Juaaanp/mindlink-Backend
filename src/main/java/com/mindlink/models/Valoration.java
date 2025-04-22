@@ -11,8 +11,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Valoration {
     @Id
     private String id;
-    private Student student;
-    private Content content;
+    private String student; //Se cambia a id
+    private String content; //Se cambia a id
     private Byte rate;
     private String comment;
 }

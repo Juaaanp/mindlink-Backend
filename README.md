@@ -7,6 +7,9 @@ Juan Pablo Rodríguez
 
 
 ## Observaciones:
+### Relaciones:
+Para la base de datos se relacionan los modelos a través de los ids, para evitar redundancia y que no se actualizen correctamente los datos.
+Sin embargo, se hacen listas propias "OwnList" (Transient para no ser escritas en la BD y evitar circularidad), que son traídas a través de las relaciones con ids y se mostrarán en el frontend.
 ### Respositorys:
  - Para obtener los datos de la base en Mongo, usamos una clase de servicio MongoRepositoryImpl, esta contiene los métodos:
 1. save(T entity)
