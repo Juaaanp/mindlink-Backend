@@ -1,5 +1,6 @@
 package com.mindlink.services;
 
+import com.mindlink.exceptions.InvalidCredentialsException;
 import com.mindlink.exceptions.InvalidEmailException;
 import com.mindlink.models.Student;
 import com.mindlink.repositories.StudentRepository;
@@ -17,6 +18,13 @@ public class StudentService {
 
     public Student loadStudentAndContents(String id) {
         return studentRepository.cargarEstudianteConContenidos(id);
+    }
+
+    public boolean existsByEmailAndPassword(String email, String password) {
+        if (!studentRepository.existsByEmailAndPassword(email, password)) {
+            throw new InvalidCredentialsException();
+        }
+        return true;
     }
 
     public boolean existsByEmail(String email) {

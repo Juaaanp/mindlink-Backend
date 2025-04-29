@@ -18,6 +18,15 @@ public class StudentRepository extends MongoRepositoryImpl<Student> {
         super(Student.class);
     }
 
+    public boolean existsByEmailAndPassword(String email, String password) {
+        Query query = new Query(
+            Criteria.where("email").is(email)
+                    .and("password").is(password)
+        );
+        return mongoTemplate.exists(query, Student.class);
+    }
+        
+
     public Student cargarEstudianteConGrupos(String id) {
         Student estudiante = mongoTemplate.findById(id, Student.class);
         if (estudiante != null && estudiante.getStudyGroupsIdList() != null) {

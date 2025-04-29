@@ -16,7 +16,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidEmailException.class)
-    public ResponseEntity<String> handleArchivoNotFoundException(InvalidEmailException ex) {
+    public ResponseEntity<String> handleInvalidEmailException(InvalidEmailException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<String> handleInvalidCredentialsException(InvalidCredentialsException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

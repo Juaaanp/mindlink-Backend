@@ -1,5 +1,6 @@
 package com.mindlink.controllers;
 
+import com.mindlink.Util.AuxiliarClasses.LoginRequest;
 import com.mindlink.models.Student;
 import com.mindlink.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,15 @@ public class StudentController {
         return studentService.loadStudentAndContents(id);
     }
 
-    //Register, uso responseEntity para devolver errores correctamente
+    //Login
+    @PostMapping("login")
+    public boolean login(@RequestBody LoginRequest loginReq) {
+        boolean ok = studentService.existsByEmailAndPassword(loginReq.getEmail(), loginReq.getPassword());
+        return ok;
+    }
+    
+
+    //Register, se valida el email en el service
     @PostMapping("/register")
     public ResponseEntity<Student> register(@RequestBody Student student) {
         Student savedStudent = studentService.save(student);
@@ -36,7 +45,7 @@ public class StudentController {
     
 
 
-    // Crear un nuevo estudiante, sobraría con register
+    // Crear un nuevo estudiante, sobraría con register, BORRAR
     @PostMapping
     public ResponseEntity<Student> createStudent(@RequestBody Student student) {
         Student savedStudent = studentService.save(student);
