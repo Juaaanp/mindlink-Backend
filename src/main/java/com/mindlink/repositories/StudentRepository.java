@@ -51,4 +51,9 @@ public class StudentRepository extends MongoRepositoryImpl<Student> {
         }
         return estudiante;
     }
+
+    public boolean existsByEmail(String email) {
+        Query query = new Query(Criteria.where("email").is(email));
+        return mongoTemplate.exists(query, Student.class);
+    }
 }

@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @RestController
@@ -24,8 +27,16 @@ public class StudentController {
         return studentService.loadStudentAndContents(id);
     }
 
+    //Register, uso responseEntity para devolver errores correctamente
+    @PostMapping("/register")
+    public ResponseEntity<Student> register(@RequestBody Student student) {
+        Student savedStudent = studentService.save(student);
+        return ResponseEntity.ok(savedStudent);
+    }
+    
 
-    // Crear un nuevo estudiante
+
+    // Crear un nuevo estudiante, sobraría con register
     @PostMapping
     public ResponseEntity<Student> createStudent(@RequestBody Student student) {
         Student savedStudent = studentService.save(student);

@@ -1,5 +1,6 @@
 package com.mindlink.services;
 
+import com.mindlink.exceptions.InvalidEmailException;
 import com.mindlink.models.Student;
 import com.mindlink.repositories.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,14 @@ public class StudentService {
         return studentRepository.cargarEstudianteConContenidos(id);
     }
 
+    public boolean existsByEmail(String email) {
+        return studentRepository.existsByEmail(email);
+    }
+
     public Student save(Student student) {
+        if (existsByEmail(student.getEmail())) {
+            throw new InvalidEmailException();
+        }
         return studentRepository.save(student);
     }
 
