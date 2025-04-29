@@ -9,5 +9,4 @@ public class MindlinkApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MindlinkApplication.class, args);
 	}
-
 }

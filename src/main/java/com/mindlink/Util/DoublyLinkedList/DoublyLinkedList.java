@@ -1,5 +1,7 @@
 package com.mindlink.Util.DoublyLinkedList;
 
+//This class is now deprecated
+
 public class DoublyLinkedList<E> {
     private Node<E> nodeBeginning, nodeEnding;
     private int size;

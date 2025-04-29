@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 @RestController
 @RequestMapping("/students")
@@ -15,6 +17,13 @@ public class StudentController {
 
     @Autowired
     private StudentService studentService;
+
+    //Get the student + his contents in an own list
+    @GetMapping("/studentContent/{id}")
+    public Student getStudentsAndContents(@PathVariable String id) {
+        return studentService.loadStudentAndContents(id);
+    }
+
 
     // Crear un nuevo estudiante
     @PostMapping

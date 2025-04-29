@@ -5,8 +5,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.mindlink.Util.DoublyLinkedList.DoublyLinkedList;
 import com.mindlink.Util.PriorityQueue.PriorityQueue;
+import com.mindlink.Util.SimplyLinkedList.SimplyLinkedList;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,13 +24,13 @@ public class Student {
     List<String> studyGroupsIdList; //Se necesita por ser relación m:m
 
     @Transient
-    DoublyLinkedList<StudyGroup> studyGroupsOwnList;
+    SimplyLinkedList<StudyGroup> studyGroupsOwnList;
 
     @Transient
-    DoublyLinkedList<Content> publishedContentsOwnList; //Con el id del estudiante en la clase Content traigo todos los contenidos
+    SimplyLinkedList<Content> publishedContentsOwnList; //Con el id del estudiante en la clase Content traigo todos los contenidos
 
     @Transient
-    DoublyLinkedList<Valoration> valorationsOwnList;
+    SimplyLinkedList<Valoration> valorationsOwnList;
 
     @Transient
     PriorityQueue<HelpRequest> helpRequestsOwnList;

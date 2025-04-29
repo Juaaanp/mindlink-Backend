@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import com.mindlink.Util.DoublyLinkedList.DoublyLinkedList;
+import com.mindlink.Util.SimplyLinkedList.SimplyLinkedList;
 import com.mindlink.models.Student;
 import com.mindlink.models.StudyGroup;
 
@@ -25,9 +25,9 @@ public class StudyGroupRepository extends MongoRepositoryImpl<StudyGroup>{
                 List<Student> estudiantes = mongoTemplate.find(query, Student.class);
 
                 // Crear lista propia
-                DoublyLinkedList<Student> listaPropia = new DoublyLinkedList<>();
+                SimplyLinkedList<Student> listaPropia = new SimplyLinkedList<>();
                 for (Student estudiante : estudiantes) {
-                    listaPropia.addEnding(estudiante);
+                    listaPropia.addLast(estudiante);
                 }
 
                 grupo.setStudentOwnList(listaPropia);

@@ -14,6 +14,10 @@ public class StudentService {
     @Autowired
     private StudentRepository studentRepository;
 
+    public Student loadStudentAndContents(String id) {
+        return studentRepository.cargarEstudianteConContenidos(id);
+    }
+
     public Student save(Student student) {
         return studentRepository.save(student);
     }

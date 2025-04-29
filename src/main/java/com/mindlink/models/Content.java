@@ -7,7 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.mindlink.Util.DoublyLinkedList.DoublyLinkedList;
+import com.mindlink.Util.SimplyLinkedList.SimplyLinkedList;
 
 @Data
 @AllArgsConstructor
@@ -22,5 +22,5 @@ public class Content {
     private String topic;
     
     @Transient
-    private DoublyLinkedList<Valoration> valorationsOwnList;
+    private SimplyLinkedList<Valoration> valorationsOwnList;
 }

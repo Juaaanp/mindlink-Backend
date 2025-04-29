@@ -1,6 +1,6 @@
 package com.mindlink.repositories;
 
-import com.mindlink.Util.DoublyLinkedList.DoublyLinkedList;
+import com.mindlink.Util.SimplyLinkedList.SimplyLinkedList;
 import com.mindlink.models.Content;
 import com.mindlink.models.Student;
 import com.mindlink.models.StudyGroup;
@@ -25,9 +25,9 @@ public class StudentRepository extends MongoRepositoryImpl<Student> {
             List<StudyGroup> grupos = mongoTemplate.find(query, StudyGroup.class); // Encuentra los grupos de un estudiante
         
             // Convertir la lista de grupos en tu lista enlazada propia
-            DoublyLinkedList<StudyGroup> listaPropia = new DoublyLinkedList<>();
+            SimplyLinkedList<StudyGroup> listaPropia = new SimplyLinkedList<>();
             for (StudyGroup grupo : grupos) {
-                listaPropia.addEnding(grupo);
+                listaPropia.addLast(grupo);
             }
     
             estudiante.setStudyGroupsOwnList(listaPropia);  // Guardas tu lista propia en el objeto
@@ -38,14 +38,16 @@ public class StudentRepository extends MongoRepositoryImpl<Student> {
     public Student cargarEstudianteConContenidos(String id) {
         Student estudiante = mongoTemplate.findById(id, Student.class);
         if (estudiante != null) {
-            Query query = new Query(Criteria.where("autorId").is(id));
+            Query query = new Query(Criteria.where("authorId").is(id));
             List<Content> contenidos = mongoTemplate.find(query, Content.class);
 
-            DoublyLinkedList<Content> listaPropia = new DoublyLinkedList<>();
+            SimplyLinkedList<Content> listaPropia = new SimplyLinkedList<>();
+            if (contenidos.isEmpty()) System.out.println("no hay contents");
             for (Content contenido : contenidos) {
-                listaPropia.addEnding(contenido);
+                listaPropia.addLast(contenido); //Meto los contenidos de la query en la lista propia
+                System.out.println("contenido encontrado");
             }
-            estudiante.setPublishedContentsOwnList(listaPropia); //Asignas en la lista @Transient
+            estudiante.setPublishedContentsOwnList(listaPropia); //Asigna en la lista @Transient
         }
         return estudiante;
     }
