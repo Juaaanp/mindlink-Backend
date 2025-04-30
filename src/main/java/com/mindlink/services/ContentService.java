@@ -14,6 +14,10 @@ public class ContentService {
     @Autowired
     private ContentRepository contentRepository;
 
+    public List<Content> findWithAuthorName() {
+        return contentRepository.findWithAuthorName();
+    }
+
     public Content save(Content content){
         return contentRepository.save(content);
     }

@@ -20,6 +20,9 @@ public class Content {
     private String authorId; //Ahora se referencia con id
     private String type;
     private String topic;
+
+    @Transient
+    private String authorName;
     
     @Transient
     private SimplyLinkedList<Valoration> valorationsOwnList;

@@ -1,6 +1,8 @@
 package com.mindlink.repositories;
 
 import com.mindlink.models.Content;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -11,6 +13,21 @@ import java.util.List;
 public class ContentRepository extends MongoRepositoryImpl<Content>{
     public ContentRepository() {
         super(Content.class);
+    }
+
+    @Autowired
+    private StudentRepository studentRepository;
+
+    public List<Content> findWithAuthorName() {
+        List<Content> contents = mongoTemplate.findAll(Content.class);
+    
+        for (Content content : contents) {
+            // Buscar el autor por ID
+            studentRepository.findById(content.getAuthorId()).ifPresent(author -> {
+                content.setAuthorName(author.getName());
+            });
+        }
+        return contents;
     }
 
     public List<Content> findByTopic(String topic){
