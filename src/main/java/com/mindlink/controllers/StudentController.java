@@ -1,6 +1,7 @@
 package com.mindlink.controllers;
 
 import com.mindlink.Util.AuxiliarClasses.LoginRequest;
+import com.mindlink.Util.AuxiliarClasses.StudentDTO;
 import com.mindlink.models.Student;
 import com.mindlink.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +28,9 @@ public class StudentController {
 
     //Login
     @PostMapping("login")
-    public boolean login(@RequestBody LoginRequest loginReq) {
-        boolean ok = studentService.existsByEmailAndPassword(loginReq.getEmail(), loginReq.getPassword());
-        return ok;
+    public StudentDTO login(@RequestBody LoginRequest loginReq) {
+        StudentDTO studentDTO = studentService.existsByEmailAndPassword(loginReq.getEmail(), loginReq.getPassword());
+        return studentDTO;
     }
     
 
