@@ -19,7 +19,7 @@ public class Content {
     private String title;
     private String authorId; //Ahora se referencia con id
     private String type;
-    private String topic;
+    private String body;
 
     @Transient
     private String authorName;

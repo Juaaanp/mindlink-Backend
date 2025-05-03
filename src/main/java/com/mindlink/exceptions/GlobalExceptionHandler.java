@@ -24,4 +24,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleInvalidCredentialsException(InvalidCredentialsException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(NotFoundValorationException.class)
+    public ResponseEntity<String> handleNotFoundValorationException(NotFoundValorationException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

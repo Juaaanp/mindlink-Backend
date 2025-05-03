@@ -1,5 +1,6 @@
 package com.mindlink.services;
 
+import com.mindlink.exceptions.NotFoundValorationException;
 import com.mindlink.models.Valoration;
 import com.mindlink.repositories.ValorationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,12 @@ public class ValorationService {
 
     @Autowired
     private ValorationRepository valorationRepository;
+
+    public List<Valoration> findByContent(String contentId) {
+        List<Valoration> val = valorationRepository.findByContentId(contentId);
+        if (val.isEmpty()) throw new NotFoundValorationException();
+        return val;
+    }
 
     public Valoration save(Valoration valoration) {
         return valorationRepository.save(valoration);

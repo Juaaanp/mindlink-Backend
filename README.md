@@ -10,6 +10,8 @@ Juan Pablo Rodríguez
 - Jackson Json usa un constructor vacío y luego setters para crear los objetos y enviarlos a la base de datos.
 - Se cambio de lista doblmente enlazada a lista simplemente enlazada para evitar redundancia (nodo previo) en el envío de jsons.
 - Para terminar un proceso: netstat -a -n -o | find "8090", taskkill /F /PID 1234
+- Cuando borro un contenido debo borrar las valoraciones de ese contenido (hacer)
+- Se cambio el campo topic a body en Content
 ### Relaciones:
 Para la base de datos se relacionan los modelos a través de los ids, para evitar redundancia y evitar que no se actualicen correctamente los datos.
 Sin embargo, se hacen listas propias "OwnList" (Transient para no ser escritas en la BD y evitar circularidad), que son traídas a través de las relaciones con ids y se mostrarán en el frontend.
