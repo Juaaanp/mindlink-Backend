@@ -2,14 +2,19 @@ package com.mindlink.controllers;
 
 import com.mindlink.Util.AuxiliarClasses.LoginRequest;
 import com.mindlink.Util.AuxiliarClasses.StudentDTO;
+import com.mindlink.exceptions.NoLoggedUserException;
 import com.mindlink.models.Student;
 import com.mindlink.services.StudentService;
+
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+
 
 
 
@@ -26,10 +31,22 @@ public class StudentController {
         return studentService.loadStudentAndContents(id);
     }
 
+    //Obtener usuario logueado
+    @GetMapping("/me")
+    public ResponseEntity<StudentDTO> getLoggedUser(HttpSession session) {
+        StudentDTO student = (StudentDTO) session.getAttribute("student");
+        if (student != null) {
+            return ResponseEntity.ok(student);
+        } else {
+            throw new NoLoggedUserException(); //Si no mando cookie la sesión se devuelve vacía
+        }
+    }
+    
     //Login
     @PostMapping("login")
-    public StudentDTO login(@RequestBody LoginRequest loginReq) {
+    public StudentDTO login(@RequestBody LoginRequest loginReq, HttpSession httpSession) {
         StudentDTO studentDTO = studentService.existsByEmailAndPassword(loginReq.getEmail(), loginReq.getPassword());
+        httpSession.setAttribute("student", studentDTO); //guarda el DTO del logged user actual para ser accedido cuando quiera
         return studentDTO;
     }
     

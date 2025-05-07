@@ -12,6 +12,9 @@ Juan Pablo Rodríguez
 - Para terminar un proceso: netstat -a -n -o | find "8090", taskkill /F /PID 1234
 - Cuando borro un contenido debo borrar las valoraciones de ese contenido (hacer)
 - Se cambio el campo topic a body en Content
+### Autenticación:
+- Al hacer login, a la sesíon(HttpSession) se le asgina un id único que se envía como cookie al cliente y por eso el cliente debe devolver esta cookie en las peticiones luego de loguearse, para reconocer quien es y devolver sus datos
+- HttpSession guarda el id de la cookie en cada petición, por eso si mando credentials vacío(cookie vacío) el id de sesión se vuelve vacía
 ### Relaciones:
 Para la base de datos se relacionan los modelos a través de los ids, para evitar redundancia y evitar que no se actualicen correctamente los datos.
 Sin embargo, se hacen listas propias "OwnList" (Transient para no ser escritas en la BD y evitar circularidad), que son traídas a través de las relaciones con ids y se mostrarán en el frontend.
@@ -27,35 +30,23 @@ Sin embargo, se hacen listas propias "OwnList" (Transient para no ser escritas e
 2. (Content) findByAuthor(String author)
 3. (Content) findByType(String type)
 
-Convertir la lista propia a normal antes de enviarlo al cliente:
+⚙️ ¿Entonces qué pasa realmente?
+Supongamos esto:
 
-@GetMapping("/students/{id}/with-groups")
-public ResponseEntity<?> getStudentWithGroups(@PathVariable String id) {
-    Student estudiante = studentService.cargarEstudianteConGrupos(id);
+Hacés login desde el navegador → se crea sesión A con ID JSESSIONID=abc123
 
-    // Transformar la lista personalizada en una lista normal para JSON
-    List<StudyGroup> grupos = estudiante.getStudyGroupsOwnList().toList(); // <--- deberías implementar este método en DoublyLinkedList
+Spring guarda el student en esa sesión A
 
-    // Puedes devolver el estudiante completo, pero reemplazando esa propiedad
-    Map<String, Object> respuesta = new HashMap<>();
-    respuesta.put("id", estudiante.getId());
-    respuesta.put("name", estudiante.getName());
-    respuesta.put("email", estudiante.getEmail());
-    respuesta.put("interests", estudiante.getInterests());
-    respuesta.put("studyGroupsIdList", estudiante.getStudyGroupsIdList());
-    respuesta.put("studyGroups", grupos); // <--- lista simple que el frontend puede entender
+Luego hacés una petición desde Postman a /me sin cookie:
 
-    return ResponseEntity.ok(respuesta);
-}
+Spring no ve ninguna cookie → crea una nueva sesión B
 
-En DoublyLinkedList:
+En la sesión B no hay student, entonces lanza la excepción
 
-public List<T> toList() {
-    List<T> list = new ArrayList<>();
-    Node<T> current = this.head;
-    while (current != null) {
-        list.add(current.data);
-        current = current.next;
-    }
-    return list;
-}
+Luego recargás el navegador → este sigue enviando la cookie abc123 automáticamente
+
+El backend encuentra la sesión A con el student
+
+Todo funciona como antes
+
+🔁 Así que cada cliente (navegador, Postman, otro navegador, otro dispositivo) tiene su propia sesión independiente, mientras no compartan el mismo JSESSIONID.
