@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 
@@ -49,6 +52,13 @@ public class StudentController {
         httpSession.setAttribute("student", studentDTO); //guarda el DTO del logged user actual para ser accedido cuando quiera
         return studentDTO;
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpSession session) {
+        session.invalidate();
+        return ResponseEntity.ok().build();
+    }
+    
     
 
     //Register, se valida el email en el service
