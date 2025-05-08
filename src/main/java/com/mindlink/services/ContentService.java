@@ -30,8 +30,8 @@ public class ContentService {
         return contentRepository.findById(id);
     }
 
-    public List<Content> findByTopic(String topic){
-        return contentRepository.findByTopic(topic);
+    public List<Content> findByTitle(String title){
+        return contentRepository.findByTitle(title);
     }
 
     public List<Content> findByAuthor(String author){

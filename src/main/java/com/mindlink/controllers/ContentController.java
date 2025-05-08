@@ -45,10 +45,10 @@ public class ContentController {
         return content.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Get all contents with the same topic
-    @GetMapping("/topic/{topic}")
-    public ResponseEntity<List<Content>> getContentsByTopic(@PathVariable String topic) {
-        List<Content> contentsFound = contentService.findByTopic(topic);
+    // Get all contents with the same title
+    @GetMapping("/title/{title}")
+    public ResponseEntity<List<Content>> getContentsByTitle(@PathVariable String title) {
+        List<Content> contentsFound = contentService.findByTitle(title);
         return ResponseEntity.ok(contentsFound);
     }
 
