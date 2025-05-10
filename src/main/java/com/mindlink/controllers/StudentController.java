@@ -1,7 +1,9 @@
 package com.mindlink.controllers;
 
+import com.mindlink.Util.AffinityGraph.AffinityGraph;
 import com.mindlink.Util.AuxiliarClasses.LoginRequest;
 import com.mindlink.Util.AuxiliarClasses.StudentDTO;
+import com.mindlink.Util.AuxiliarClasses.StudentGraphDTO;
 import com.mindlink.exceptions.NoLoggedUserException;
 import com.mindlink.models.Student;
 import com.mindlink.services.StudentService;
@@ -14,12 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-
-
-
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/students")
@@ -28,28 +25,44 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
 
-    //Get the student + his contents in an own list
+    @GetMapping("/affinity/{studentId}")
+    public ResponseEntity<StudentGraphDTO> getStudentGraph(@PathVariable String studentId) {
+        Optional<Student> optionalStudent = studentService.findById(studentId);
+
+        if (optionalStudent.isEmpty()) {
+            return ResponseEntity.notFound().build(); // Devuelve 404 si no se encuentra
+        }
+
+        Student student = optionalStudent.get();
+        List<Student> connections = AffinityGraph.getInstance().getConnectionsForStudent(student);
+        List<String> connectedIds = connections.stream().map(Student::getId).collect(Collectors.toList());
+
+        return ResponseEntity.ok(new StudentGraphDTO(studentId, connectedIds));
+    }
+
+    // Get the student + his contents in an own list
     @GetMapping("/studentContent/{id}")
     public Student getStudentsAndContents(@PathVariable String id) {
         return studentService.loadStudentAndContents(id);
     }
 
-    //Obtener usuario logueado
+    // Obtener usuario logueado
     @GetMapping("/me")
     public ResponseEntity<StudentDTO> getLoggedUser(HttpSession session) {
         StudentDTO student = (StudentDTO) session.getAttribute("student");
         if (student != null) {
             return ResponseEntity.ok(student);
         } else {
-            throw new NoLoggedUserException(); //Si no mando cookie la sesión se devuelve vacía
+            throw new NoLoggedUserException(); // Si no mando cookie la sesión se devuelve vacía
         }
     }
-    
-    //Login
+
+    // Login
     @PostMapping("login")
     public StudentDTO login(@RequestBody LoginRequest loginReq, HttpSession httpSession) {
         StudentDTO studentDTO = studentService.existsByEmailAndPassword(loginReq.getEmail(), loginReq.getPassword());
-        httpSession.setAttribute("student", studentDTO); //guarda el DTO del logged user actual para ser accedido cuando quiera
+        httpSession.setAttribute("student", studentDTO); // guarda el DTO del logged user actual para ser accedido
+                                                         // cuando quiera
         return studentDTO;
     }
 
@@ -58,17 +71,13 @@ public class StudentController {
         session.invalidate();
         return ResponseEntity.ok().build();
     }
-    
-    
 
-    //Register, se valida el email en el service
+    // Register, se valida el email en el service
     @PostMapping("/register")
     public ResponseEntity<Student> register(@RequestBody Student student) {
         Student savedStudent = studentService.save(student);
         return ResponseEntity.ok(savedStudent);
     }
-    
-
 
     // Crear un nuevo estudiante, sobraría con register, BORRAR
     @PostMapping

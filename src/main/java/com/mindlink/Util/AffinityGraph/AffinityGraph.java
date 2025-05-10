@@ -4,6 +4,7 @@ import com.mindlink.models.Student;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +18,15 @@ public class AffinityGraph {
         this.graph = new HashMap<>();
     }
 
-    public static AffinityGraph getInstance(){
-        if (instance == null){
+    public static AffinityGraph getInstance() {
+        if (instance == null) {
             instance = new AffinityGraph();
         }
         return instance;
     }
+
+    public List<Student> getConnectionsForStudent(Student student) {
+        return graph.getOrDefault(student, new ArrayList<>());
+    }
+
 }
