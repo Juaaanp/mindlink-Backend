@@ -12,8 +12,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class HelpRequest implements Comparable<HelpRequest> {
     @Id
     private String id;
-    private String student; //Ahora se referencia con id
-    private String topic;
+    private String student; //Id
+    private String subject;
+    private String type;
+    private String body; 
+    private String response; //Debería iniciar vacío
     private Integer priorityLevel;
     private HelpRequestState state;
 

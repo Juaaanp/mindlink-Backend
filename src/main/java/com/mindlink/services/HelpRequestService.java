@@ -14,6 +14,10 @@ public class HelpRequestService {
     @Autowired
     private HelpRequestRepository helpRequestRepository;
 
+    public List<HelpRequest> findByStudent(String id) {
+        return helpRequestRepository.findByStudent(id);
+    }
+
     public HelpRequest save(HelpRequest helpRequest) {
         return helpRequestRepository.save(helpRequest);
     }
