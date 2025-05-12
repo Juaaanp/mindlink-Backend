@@ -15,6 +15,7 @@ Juan Pablo Rodríguez
 ### Autenticación:
 - Al hacer login, a la sesíon(HttpSession) se le asgina un id único que se envía como cookie al cliente y por eso el cliente debe devolver esta cookie en las peticiones luego de loguearse, para reconocer quien es y devolver sus datos
 - HttpSession guarda el id de la cookie en cada petición, por eso si mando credentials vacío(cookie vacío) el id de sesión se vuelve vacía
+- Se debe poner un email válido para no demorarse mucho en el proceso de registro
 ### Relaciones:
 Para la base de datos se relacionan los modelos a través de los ids, para evitar redundancia y evitar que no se actualicen correctamente los datos.
 Sin embargo, se hacen listas propias "OwnList" (Transient para no ser escritas en la BD y evitar circularidad), que son traídas a través de las relaciones con ids y se mostrarán en el frontend.

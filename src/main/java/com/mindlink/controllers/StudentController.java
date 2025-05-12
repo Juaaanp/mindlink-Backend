@@ -4,6 +4,8 @@ import com.mindlink.Util.AffinityGraph.AffinityGraph;
 import com.mindlink.Util.AuxiliarClasses.LoginRequest;
 import com.mindlink.Util.AuxiliarClasses.StudentDTO;
 import com.mindlink.Util.AuxiliarClasses.StudentGraphDTO;
+import com.mindlink.Util.communication.EmailSenderReactive;
+import com.mindlink.exceptions.EmailSenderException;
 import com.mindlink.exceptions.NoLoggedUserException;
 import com.mindlink.models.Student;
 import com.mindlink.services.StudentService;
@@ -24,6 +26,9 @@ public class StudentController {
 
     @Autowired
     private StudentService studentService;
+
+    @Autowired
+    private EmailSenderReactive emailSenderReactive;
 
     @GetMapping("/affinity/{studentId}")
     public ResponseEntity<StudentGraphDTO> getStudentGraph(@PathVariable String studentId) {
@@ -76,6 +81,12 @@ public class StudentController {
     @PostMapping("/register")
     public ResponseEntity<Student> register(@RequestBody Student student) {
         Student savedStudent = studentService.save(student);
+
+        try { //Para enviar correo de registro
+            emailSenderReactive.sendEmail(savedStudent.getName(), savedStudent.getInterests(), savedStudent.getEmail());
+        } catch(Exception e) {
+            throw new EmailSenderException();
+        }
         return ResponseEntity.ok(savedStudent);
     }
 
