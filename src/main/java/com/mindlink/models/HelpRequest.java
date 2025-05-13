@@ -1,13 +1,12 @@
 package com.mindlink.models;
 
 import com.mindlink.Util.Enums.HelpRequestState;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@AllArgsConstructor
 @Document(collection = "helpRequests")
 public class HelpRequest implements Comparable<HelpRequest> {
     @Id
@@ -19,6 +18,9 @@ public class HelpRequest implements Comparable<HelpRequest> {
     private String response; //Debería iniciar vacío
     private Integer priorityLevel;
     private HelpRequestState state;
+
+    @Transient
+    private String studentName; //Para mostrarlo al moderador
 
 
     @Override

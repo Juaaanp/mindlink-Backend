@@ -17,11 +17,16 @@ public class HelpRequestController {
     @Autowired
     private HelpRequestService helpRequestService;
 
+    @GetMapping("/findWithPriority")
+    public List<HelpRequest> findWithPriority() {
+        return helpRequestService.findAllPriority();
+    }
+    
+
     @GetMapping("/findByStudent/{id}")
     public List<HelpRequest> getHelpRequestByStudent(@PathVariable String id) {
         return helpRequestService.findByStudent(id);
     }
-    
 
 
     // Crear una nueva solicitud de ayuda

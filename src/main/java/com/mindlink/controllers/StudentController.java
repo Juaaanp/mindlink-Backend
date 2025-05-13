@@ -5,7 +5,6 @@ import com.mindlink.Util.AuxiliarClasses.LoginRequest;
 import com.mindlink.Util.AuxiliarClasses.StudentDTO;
 import com.mindlink.Util.AuxiliarClasses.StudentGraphDTO;
 import com.mindlink.Util.communication.EmailSenderReactive;
-import com.mindlink.exceptions.EmailSenderException;
 import com.mindlink.exceptions.NoLoggedUserException;
 import com.mindlink.models.Student;
 import com.mindlink.services.StudentService;
@@ -82,11 +81,9 @@ public class StudentController {
     public ResponseEntity<Student> register(@RequestBody Student student) {
         Student savedStudent = studentService.save(student);
 
-        try { //Para enviar correo de registro
-            emailSenderReactive.sendEmail(savedStudent.getName(), savedStudent.getInterests(), savedStudent.getEmail());
-        } catch(Exception e) {
-            throw new EmailSenderException();
-        }
+        // Se ejecuta de forma asíncrona, no bloquea la respuesta
+        emailSenderReactive.sendEmail(savedStudent.getName(), savedStudent.getInterests(), savedStudent.getEmail());
+
         return ResponseEntity.ok(savedStudent);
     }
 

@@ -12,22 +12,22 @@ public class PriorityQueue<T extends Comparable<T>> {
         size = 0;
     }
 
-    // Insert with priority
-    public void insert(T value) {
+    // Insert with priority, mayor a menor
+    public void insert(T value) { //<0 if a<b, 0 if a=b, >0 if a>b
         Node<T> newNode = new Node<>(value);
 
         if (isEmpty()) {
-            // if is empty, the new node is the beggining as well as ending.
+            // if it is empty, the new node is the beginning as well as ending.
             nodeBeggining = nodeEnding = newNode;
-        } else if (value.compareTo(nodeBeggining.getValue()) > 0) {
+        } else if (value.compareTo(nodeBeggining.getValue()) > 0) { //si a es mayor
             // if the new node has more priority than the first one
             newNode.setNextNode(nodeBeggining);
             nodeBeggining = newNode;
         } else {
             // search the right position in the list.
             Node<T> current = nodeBeggining;
-            while (current.getNextNode() != null &&
-                    value.compareTo(current.getNextNode().getValue()) <= 0) {
+            while (current.getNextNode() != null && //Cuando value sea mayor o igual al siguiente lo voy a poner detras de este
+                    value.compareTo(current.getNextNode().getValue()) <= 0) { //Mientras value sea menor o igual al siguiente del actual voy a seguir avanzando
                 current = current.getNextNode();
             }
             newNode.setNextNode(current.getNextNode());
@@ -59,11 +59,11 @@ public class PriorityQueue<T extends Comparable<T>> {
     // Method poll: Removes and returns the element with the highest priority (head of the queue)
     public T poll() {
         if (isEmpty()) {
-            return null; // If the queue is empty, return null
+            return null;
         }
-        T highestPriorityValue = nodeBeggining.getValue(); // Get the value with the highest priority
+        T highestPriorityValue = nodeBeggining.getValue();
         nodeBeggining = nodeBeggining.getNextNode(); // Move the head to the next node
-        size--; // Decrease the size of the queue
+        size--;
 
         if (isEmpty()) {
             nodeEnding = null; // If the queue is empty after removal, set the ending node to null
