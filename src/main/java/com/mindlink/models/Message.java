@@ -1,12 +1,14 @@
 package com.mindlink.models;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
 @Document(collection = "messages")
 public class Message {
     @Id

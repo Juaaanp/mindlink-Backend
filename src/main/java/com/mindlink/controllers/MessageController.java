@@ -2,33 +2,35 @@ package com.mindlink.controllers;
 
 import com.mindlink.models.Message;
 import com.mindlink.services.MessageService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/messages")
 public class MessageController {
+    private final MessageService messageService;
 
-    @Autowired
-    private MessageService messageService;
+    public MessageController(MessageService messageService) {
+        this.messageService = messageService;
+    }
 
     @PostMapping
-    public ResponseEntity<Message> sendMessage(@RequestBody Message message) {
-        return ResponseEntity.ok(messageService.save(message));
+    public Message sendMessage(@RequestBody Map<String, Object> payload) {
+        String chatId = payload.get("chatId").toString();
+        String senderId = payload.get("senderId").toString();
+        String text = payload.get("text").toString();
+        return messageService.sendMessage(chatId, senderId, text);
     }
 
     @GetMapping("/byChat/{chatId}")
-    public ResponseEntity<List<Message>> getMessagesByChat(@PathVariable String chatId) {
-        return ResponseEntity.ok(messageService.findByChatId(chatId));
+    public List<Message> getMessagesByChat(@PathVariable String chatId) {
+        return messageService.getMessagesByChat(chatId);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Message>> getAllMessages() {
-        return ResponseEntity.ok(messageService.findAll());
+    @GetMapping
+    public List<Message> getAllMessages() {
+        return messageService.getAllMessages();
     }
-
-
 }

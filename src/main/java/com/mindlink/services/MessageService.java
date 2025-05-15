@@ -2,25 +2,32 @@ package com.mindlink.services;
 
 import com.mindlink.models.Message;
 import com.mindlink.repositories.MessageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class MessageService {
-    @Autowired
-    private MessageRepository messageRepository;
+    private final MessageRepository messageRepository;
 
-    public Message save(Message message) {
+    public MessageService(MessageRepository messageRepository) {
+        this.messageRepository = messageRepository;
+    }
+
+    public Message sendMessage(String chatId, String senderId, String text) {
+        Message message = new Message();
+        message.setChatId(chatId);
+        message.setSenderId(senderId);
+        message.setText(text);
+        message.setTimestamp(LocalDateTime.now());
         return messageRepository.save(message);
     }
 
-    public List<Message> findByChatId(String chatId) {
+    public List<Message> getMessagesByChat(String chatId) {
         return messageRepository.findByChatIdOrderByTimestampAsc(chatId);
     }
 
-    public List<Message>findAll() {
+    public List<Message> getAllMessages() {
         return messageRepository.findAll();
     }
 }
