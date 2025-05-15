@@ -39,4 +39,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleEmailSenderException(EmailSenderException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(NullOrVoidException.class)
+    public ResponseEntity<String> handleNullOrVoidException(NullOrVoidException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

@@ -21,7 +21,7 @@ public class Student {
     String password;
     List<String> interests;
 
-    List<String> studyGroupsIdList; //Se necesita por ser relación m:m
+    List<String> studyGroupsIdList; //Se necesita por ser relación m:m, por ahora no se va a utilizar
 
     @Transient
     SimplyLinkedList<StudyGroup> studyGroupsOwnList;

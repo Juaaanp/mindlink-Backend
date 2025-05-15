@@ -1,5 +1,6 @@
 package com.mindlink.controllers;
 
+import com.mindlink.Util.AuxiliarClasses.StudyGroupDTO;
 import com.mindlink.models.StudyGroup;
 import com.mindlink.services.StudyGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
 
 @RestController
 @RequestMapping("/studyGroups")
@@ -15,6 +21,36 @@ public class StudyGroupController {
 
     @Autowired
     private StudyGroupService studyGroupService;
+
+    @PostMapping("addDescription/{groupId}")
+    public ResponseEntity<?> postMethodName(@PathVariable String groupId, @RequestBody Map<String, String> body) {
+        try {
+            studyGroupService.addDescriptionToGroup(groupId, body);
+            return ResponseEntity.ok().build();
+
+        } catch(RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+    
+
+    @PostMapping("/addContent/{groupId}")
+    public ResponseEntity<Void> addContentToGroup(@PathVariable String groupId, @RequestBody Map<String, String> newContent) {
+        try {
+            studyGroupService.addContentToGroup(groupId, newContent);
+            return ResponseEntity.ok().build();
+
+        } catch(RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    
+
+    @GetMapping("/findByStudent/{id}")
+    public List<StudyGroupDTO> geStudyGroupsByStudent(@PathVariable String id) {
+        return studyGroupService.findGroupsByStudent(id);
+    }
+    
 
     // Crear un nuevo grupo de estudio
     @PostMapping

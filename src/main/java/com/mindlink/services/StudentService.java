@@ -5,6 +5,8 @@ import com.mindlink.exceptions.InvalidCredentialsException;
 import com.mindlink.exceptions.InvalidEmailException;
 import com.mindlink.models.Student;
 import com.mindlink.repositories.StudentRepository;
+import com.mindlink.repositories.StudyGroupRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,13 @@ public class StudentService {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private StudyGroupRepository studyGroupRepository;
+
+    public void registerStudyGroupsForStudent(Student student) {
+        studyGroupRepository.registerStudyGroupsForStudent(student);
+    }    
 
     public Student loadStudentAndContents(String id) {
         return studentRepository.cargarEstudianteConContenidos(id);

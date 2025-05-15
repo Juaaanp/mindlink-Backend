@@ -62,7 +62,7 @@ public class StudentController {
     }
 
     // Login
-    @PostMapping("login")
+    @PostMapping("login") //La sesión tiene una duración predeterminada de 30 minutos
     public StudentDTO login(@RequestBody LoginRequest loginReq, HttpSession httpSession) {
         StudentDTO studentDTO = studentService.existsByEmailAndPassword(loginReq.getEmail(), loginReq.getPassword());
         httpSession.setAttribute("student", studentDTO); // guarda el DTO del logged user actual para ser accedido
@@ -80,7 +80,8 @@ public class StudentController {
     @PostMapping("/register")
     public ResponseEntity<Student> register(@RequestBody Student student) {
         Student savedStudent = studentService.save(student);
-
+        //Para asignarlo automáticamente a los grupos de estudio
+        studentService.registerStudyGroupsForStudent(savedStudent);
         // Se ejecuta de forma asíncrona, no bloquea la respuesta
         emailSenderReactive.sendEmail(savedStudent.getName(), savedStudent.getInterests(), savedStudent.getEmail());
 

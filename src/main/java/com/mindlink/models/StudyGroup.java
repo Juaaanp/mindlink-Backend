@@ -15,15 +15,13 @@ import com.mindlink.Util.SimplyLinkedList.SimplyLinkedList;
 public class StudyGroup {
     @Id
     private String id;
-    private String topic;
+    private String topic; //Interests
+    private String description;
+    private List<String> contents;
+    //horarios, fechas, etc
 
-    private List<String> studentIdList;
+    private List<String> studentIdList; //Para evitar subconsultas
 
     @Transient
     private SimplyLinkedList<Student> studentOwnList;
-
-    public StudyGroup(String id, String topic) {
-        this.id = id;
-        this.topic = topic;
-    }
 }

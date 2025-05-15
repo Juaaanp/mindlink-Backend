@@ -10,7 +10,7 @@ Juan Pablo Rodríguez
 - Jackson Json usa un constructor vacío y luego setters para crear los objetos y enviarlos a la base de datos.
 - Se cambio de lista doblmente enlazada a lista simplemente enlazada para evitar redundancia (nodo previo) en el envío de jsons.
 - Para terminar un proceso: netstat -a -n -o | find "8090", taskkill /F /PID 1234
-- Cuando borro un contenido debo borrar las valoraciones de ese contenido (hacer)
+- Cuando borro un contenido debo borrar las valoraciones de ese contenido (hacer) <-----------
 - Se cambio el campo topic a body en Content
 ### Autenticación:
 - Al hacer login, a la sesíon(HttpSession) se le asgina un id único que se envía como cookie al cliente y por eso el cliente debe devolver esta cookie en las peticiones luego de loguearse, para reconocer quien es y devolver sus datos
