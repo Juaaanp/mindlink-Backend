@@ -6,6 +6,7 @@ import com.mindlink.models.Student;
 import com.mindlink.models.StudyGroup;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -26,7 +27,10 @@ public class StudentRepository extends MongoRepositoryImpl<Student> {
         return mongoTemplate.findOne(query, Student.class);
     }
     
-        
+    public Optional<Student> findByEmail(String email) {
+        Query query = new Query(Criteria.where("email").is(email));
+        return Optional.ofNullable(mongoTemplate.findOne(query, Student.class));
+    }
 
     public Student cargarEstudianteConGrupos(String id) {
         Student estudiante = mongoTemplate.findById(id, Student.class);
@@ -66,4 +70,6 @@ public class StudentRepository extends MongoRepositoryImpl<Student> {
         Query query = new Query(Criteria.where("email").is(email));
         return mongoTemplate.exists(query, Student.class);
     }
+
+    
 }

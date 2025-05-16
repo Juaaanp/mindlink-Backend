@@ -122,4 +122,10 @@ public class StudentController {
         boolean deleted = studentService.delete(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/email/{email}")
+public ResponseEntity<Student> getStudentByEmail(@PathVariable String email) {
+    Optional<Student> student = studentService.findByEmail(email);
+    return student.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+}
 }
