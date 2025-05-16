@@ -32,7 +32,15 @@ public class MessageService {
     }
 
     public void deleteMessage(String messageId) {
-        messageRepository.deleteById(messageId); //Necesario oara eliminar el mensaje por su ID
+        messageRepository.deleteById(messageId); // Necesario oara eliminar el mensaje por su ID
+    }
+
+    public Message editMessage(String messageId, String newText) {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new RuntimeException("Mensaje no encontrado"));
+        message.setText(newText);
+
+        return messageRepository.save(message);
     }
 
 }

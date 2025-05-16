@@ -42,4 +42,11 @@ public class MessageController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Message> editMessage(@PathVariable String id, @RequestBody Map<String, Object> payload) {
+        String newText = payload.get("text").toString();
+        Message updated = messageService.editMessage(id, newText);
+        return ResponseEntity.ok(updated);
+    }
+
 }
