@@ -32,7 +32,7 @@ public class MessageService {
     }
 
     public void deleteMessage(String messageId) {
-        messageRepository.deleteById(messageId);
+        messageRepository.deleteById(messageId); //Necesario oara eliminar el mensaje por su ID
     }
 
 }
