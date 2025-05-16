@@ -2,6 +2,8 @@ package com.mindlink.controllers;
 
 import com.mindlink.models.Message;
 import com.mindlink.services.MessageService;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,4 +35,11 @@ public class MessageController {
     public List<Message> getAllMessages() {
         return messageService.getAllMessages();
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteMessage(@PathVariable String id) {
+        messageService.deleteMessage(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
