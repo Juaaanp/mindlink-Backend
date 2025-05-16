@@ -17,11 +17,11 @@ public class ChatController {
 
     @PostMapping
     public Chat createChat(@RequestBody ChatCreateRequest request) {
-        return chatService.createChat(request.getParticipantIds());
+        return chatService.createChat(request.getParticipantEmails());
     }
 
-    @GetMapping("/participant/{participantId}")
-    public List<Chat> getChatsByParticipant(@PathVariable String participantId) {
-        return chatService.getChatsByParticipant(participantId);
-    }
+@GetMapping("/participant/{email}")
+public List<Chat> getChatsByParticipant(@PathVariable String email) {
+    return chatService.getChatsByParticipant(email);
+}
 }

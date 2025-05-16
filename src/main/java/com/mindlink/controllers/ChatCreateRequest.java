@@ -5,5 +5,5 @@ import java.util.List;
 
 @Data
 public class ChatCreateRequest {
-    private List<String> participantIds;
+    private List<String> participantEmails; 
 }

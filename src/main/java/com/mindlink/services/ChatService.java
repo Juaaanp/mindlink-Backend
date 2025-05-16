@@ -12,14 +12,13 @@ public class ChatService {
     public ChatService(ChatRepository chatRepository) {
         this.chatRepository = chatRepository;
     }
+public Chat createChat(List<String> participantEmails) {
+    Chat chat = new Chat();
+    chat.setParticipantEmails(participantEmails);
+    return chatRepository.save(chat);
+}
 
-    public Chat createChat(List<String> participantIds) {
-        Chat chat = new Chat();
-        chat.setParticipantIds(participantIds);
-        return chatRepository.save(chat);
-    }
-
-    public List<Chat> getChatsByParticipant(String participantId) {
-        return chatRepository.findByParticipantIdsContaining(participantId);
-    }
+public List<Chat> getChatsByParticipant(String email) {
+    return chatRepository.findByParticipantEmailsContaining(email);
+}
 }
