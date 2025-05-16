@@ -20,8 +20,13 @@ public class ChatController {
         return chatService.createChat(request.getParticipantEmails());
     }
 
-@GetMapping("/participant/{email}")
-public List<Chat> getChatsByParticipant(@PathVariable String email) {
-    return chatService.getChatsByParticipant(email);
-}
+    @GetMapping("/participant/{email}")
+    public List<Chat> getChatsByParticipant(@PathVariable String email) {
+        return chatService.getChatsByParticipant(email);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteChat(@PathVariable String id) {
+        chatService.deleteChat(id);
+    }
 }
