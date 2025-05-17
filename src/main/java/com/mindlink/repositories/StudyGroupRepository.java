@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -72,6 +74,54 @@ public class StudyGroupRepository extends MongoRepositoryImpl<StudyGroup> {
 
         return dtos; //Aca puedo meterlos en una lista enlazada y luego sacarlos para cumplir con los requisitos
     }
+
+    public List<StudyGroupDTO> getAllGroupDTOs() { //Versión optimizada de consultas. Incluso carga más rápido
+
+        List<StudyGroup> groups = findAll();
+        List<StudyGroupDTO> groupDTOs = new ArrayList<>();
+
+        // Paso 1: Recolectar todos los IDs de estudiantes (sin duplicados)
+        Set<String> allStudentIds = groups.stream()
+            .flatMap(group -> group.getStudentIdList().stream())
+            .collect(Collectors.toSet());
+
+        // Paso 2: Hacer UNA sola consulta a Mongo
+        Query studentQuery = new Query(Criteria.where("id").in(allStudentIds));
+        List<Student> allStudents = mongoTemplate.find(studentQuery, Student.class);
+
+        // Paso 3: Crear un mapa id -> Student
+        Map<String, Student> studentMap = allStudents.stream()
+            .collect(Collectors.toMap(Student::getId, student -> student));
+
+        // Paso 4: Mapear grupos a DTOs
+        for (StudyGroup g : groups) {
+            StudyGroupDTO dto = new StudyGroupDTO();
+            dto.setId(g.getId());
+            dto.setTopic(g.getTopic());
+            dto.setDescription(g.getDescription());
+            dto.setContents(g.getContents());
+
+            // Mapear los estudiantes de este grupo usando el mapa
+            List<StudyGroupDTO.Student> studentDTOs = g.getStudentIdList().stream()
+                .map(studentId -> {
+                    Student student = studentMap.get(studentId);
+                    if (student == null) return null; // Por si falta alguno
+                    StudyGroupDTO.Student dtoStudent = new StudyGroupDTO.Student();
+                    dtoStudent.setId(student.getId());
+                    dtoStudent.setName(student.getName());
+                    dtoStudent.setEmail(student.getEmail());
+                    return dtoStudent;
+                })
+                .filter(Objects::nonNull) // Remueve los que no se encontraron
+                .collect(Collectors.toList());
+
+            dto.setStudents(studentDTOs);
+            groupDTOs.add(dto);
+        }
+
+        return groupDTOs;
+    }
+
 
     public void registerStudyGroupsForStudent(Student student) { // Falta poner el id del grupo al estudiante?
 

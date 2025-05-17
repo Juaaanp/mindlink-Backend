@@ -51,6 +51,11 @@ public class StudyGroupController {
         return studyGroupService.findGroupsByStudent(id);
     }
     
+    @GetMapping("/getAllDTOs")
+    public List<StudyGroupDTO> getAllDtos() {
+        return studyGroupService.findAllDtos();
+    }
+
 
     // Crear un nuevo grupo de estudio
     @PostMapping

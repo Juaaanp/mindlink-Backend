@@ -38,6 +38,10 @@ public class StudyGroupService {
         return studyGroupRepository.findGroupsByStudent(id);
     }
 
+    public List<StudyGroupDTO> findAllDtos() {
+        return studyGroupRepository.getAllGroupDTOs();
+    }
+
     public StudyGroup save(StudyGroup studyGroup) {
         return studyGroupRepository.save(studyGroup);
     }
