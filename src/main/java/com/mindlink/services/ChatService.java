@@ -3,7 +3,6 @@ package com.mindlink.services;
 import com.mindlink.models.Chat;
 import com.mindlink.repositories.ChatRepository;
 import com.mindlink.repositories.MessageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +12,6 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
 
-    @Autowired
     public ChatService(ChatRepository chatRepository, MessageRepository messageRepository) {
         this.chatRepository = chatRepository;
         this.messageRepository = messageRepository;

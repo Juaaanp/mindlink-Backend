@@ -19,6 +19,12 @@ public class ContentRepository extends MongoRepositoryImpl<Content> {
     @Autowired
     private StudentRepository studentRepository;
 
+    public List<Content> findByIdStudent(String id) {
+
+        Query query = new Query(Criteria.where("authorId").is(id));
+        return mongoTemplate.find(query, Content.class);
+    }
+
     public List<Content> findWithAuthorName() {
         List<Content> contents = mongoTemplate.findAll(Content.class);
 

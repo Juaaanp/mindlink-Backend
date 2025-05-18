@@ -17,7 +17,7 @@ public class Content {
     @Id
     private String id;
     private String title;
-    private String authorId; //Ahora se referencia con id
+    private String authorId; //Ahora se referencia con id 
     private String type;
     private String body;
 

@@ -14,6 +14,10 @@ public class ContentService {
     @Autowired
     private ContentRepository contentRepository;
 
+    public List<Content> findByIdStudent(String id) {
+        return contentRepository.findByIdStudent(id);
+    }
+
     public List<Content> findWithAuthorName() {
         return contentRepository.findWithAuthorName();
     }

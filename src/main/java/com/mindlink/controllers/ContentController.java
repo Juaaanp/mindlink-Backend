@@ -18,6 +18,12 @@ public class ContentController {
     @Autowired
     private ContentService contentService;
 
+    @GetMapping("/findByIdStudent/{id}")
+    public List<Content> findByIdStudent (@PathVariable String id) {
+        return contentService.findByIdStudent(id);
+    }
+    
+
     @GetMapping("/withAuthorName")
     public ResponseEntity<List<Content>> withAuthorName() {
         return ResponseEntity.ok(contentService.findWithAuthorName());
