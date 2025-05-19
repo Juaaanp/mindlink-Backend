@@ -1,20 +1,23 @@
 package com.mindlink.controllers;
 
 import com.mindlink.Util.AffinityGraph.AffinityGraph;
+import com.mindlink.Util.AffinityGraph.FullGraphDTO;
 import com.mindlink.Util.AuxiliarClasses.LoginRequest;
 import com.mindlink.Util.AuxiliarClasses.StudentDTO;
 import com.mindlink.Util.AuxiliarClasses.StudentGraphDTO;
 import com.mindlink.Util.communication.EmailSenderReactive;
 import com.mindlink.exceptions.NoLoggedUserException;
 import com.mindlink.models.Student;
+import com.mindlink.models.StudyGroup;
 import com.mindlink.services.StudentService;
+import com.mindlink.services.StudyGroupService;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,23 +30,11 @@ public class StudentController {
     private StudentService studentService;
 
     @Autowired
+    private StudyGroupService studyGroupService;
+
+    @Autowired
     private EmailSenderReactive emailSenderReactive;
-
-    @GetMapping("/affinity/{studentId}")
-    public ResponseEntity<StudentGraphDTO> getStudentGraph(@PathVariable String studentId) {
-        Optional<Student> optionalStudent = studentService.findById(studentId);
-
-        if (optionalStudent.isEmpty()) {
-            return ResponseEntity.notFound().build(); // Devuelve 404 si no se encuentra
-        }
-
-        Student student = optionalStudent.get();
-        List<Student> connections = AffinityGraph.getInstance().getConnectionsForStudent(student);
-        List<String> connectedIds = connections.stream().map(Student::getId).collect(Collectors.toList());
-
-        return ResponseEntity.ok(new StudentGraphDTO(studentId, connectedIds));
-    }
-
+    
     // Get the student + his contents in an own list
     @GetMapping("/studentContent/{id}")
     public Student getStudentsAndContents(@PathVariable String id) {
@@ -62,12 +53,39 @@ public class StudentController {
     }
 
     // Login
-    @PostMapping("login") //La sesión tiene una duración predeterminada de 30 minutos
+    @PostMapping("login") // La sesión tiene una duración predeterminada de 30 minutos
     public StudentDTO login(@RequestBody LoginRequest loginReq, HttpSession httpSession) {
         StudentDTO studentDTO = studentService.existsByEmailAndPassword(loginReq.getEmail(), loginReq.getPassword());
         httpSession.setAttribute("student", studentDTO); // guarda el DTO del logged user actual para ser accedido
                                                          // cuando quiera
         return studentDTO;
+    }
+
+    // subgrafo para estudiante
+    @GetMapping("/affinity/subgraph/{studentId}")
+    public ResponseEntity<StudentGraphDTO> getStudentSubgraph(@PathVariable String studentId) {
+        return ResponseEntity.ok(studentService.getSubgraphForStudent(studentId));
+    }
+
+    // grafo total para moderador
+    @GetMapping("/affinity/fullgraph")
+    public ResponseEntity<FullGraphDTO> getFullAffinityGraph() {
+        return ResponseEntity.ok(studentService.getFullGraphForModerator());
+    }
+
+    @PostConstruct
+    public void buildAffinityGraphFromGroups() {
+        List<StudyGroup> groups = studyGroupService.findAll();
+        AffinityGraph.getInstance().buildGraphFromStudyGroups(
+                groups,
+                id -> studentService.findById(id).orElse(null) // Aquí convertimos Optional<Student> en Student
+        );
+    }
+
+    @GetMapping("/affinity/rebuild")
+    public ResponseEntity<?> rebuildAffinityGraph() {
+        buildAffinityGraphFromGroups();
+        return ResponseEntity.ok("Graph rebuilt");
     }
 
     @PostMapping("/logout")
@@ -80,7 +98,7 @@ public class StudentController {
     @PostMapping("/register")
     public ResponseEntity<Student> register(@RequestBody Student student) {
         Student savedStudent = studentService.save(student);
-        //Para asignarlo automáticamente a los grupos de estudio
+        // Para asignarlo automáticamente a los grupos de estudio
         studentService.registerStudyGroupsForStudent(savedStudent);
         // Se ejecuta de forma asíncrona, no bloquea la respuesta
         emailSenderReactive.sendEmail(savedStudent.getName(), savedStudent.getInterests(), savedStudent.getEmail());
@@ -124,8 +142,8 @@ public class StudentController {
     }
 
     @GetMapping("/email/{email}")
-public ResponseEntity<Student> getStudentByEmail(@PathVariable String email) {
-    Optional<Student> student = studentService.findByEmail(email);
-    return student.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-}
+    public ResponseEntity<Student> getStudentByEmail(@PathVariable String email) {
+        Optional<Student> student = studentService.findByEmail(email);
+        return student.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }

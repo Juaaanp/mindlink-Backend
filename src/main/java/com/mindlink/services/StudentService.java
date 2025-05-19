@@ -1,6 +1,9 @@
 package com.mindlink.services;
 
+import com.mindlink.Util.AffinityGraph.AffinityGraph;
+import com.mindlink.Util.AffinityGraph.FullGraphDTO;
 import com.mindlink.Util.AuxiliarClasses.StudentDTO;
+import com.mindlink.Util.AuxiliarClasses.StudentGraphDTO;
 import com.mindlink.exceptions.InvalidCredentialsException;
 import com.mindlink.exceptions.InvalidEmailException;
 import com.mindlink.models.Student;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -24,7 +28,7 @@ public class StudentService {
 
     public void registerStudyGroupsForStudent(Student student) {
         studyGroupRepository.registerStudyGroupsForStudent(student);
-    }    
+    }
 
     public Student loadStudentAndContents(String id) {
         return studentRepository.cargarEstudianteConContenidos(id);
@@ -74,6 +78,25 @@ public class StudentService {
     }
 
     public Optional<Student> findByEmail(String email) {
-    return studentRepository.findByEmail(email);
+        return studentRepository.findByEmail(email);
+    }
+
+    // obtener el grafo completo (moderador)
+    public FullGraphDTO getFullGraphForModerator() {
+        return AffinityGraph.getInstance().getFullGraphDTO();
+    }
+
+    // obtener el subgrafo (estudiante)
+    public StudentGraphDTO getSubgraphForStudent(String studentId) {
+    Optional<Student> optionalStudent = findById(studentId);
+    if (optionalStudent.isEmpty()) throw new RuntimeException("Student not found");
+
+    Student student = optionalStudent.get();
+    List<Student> connections = AffinityGraph.getInstance().getConnectionsForStudent(student);
+    List<String> connectedIds = connections.stream().map(Student::getId).collect(Collectors.toList());
+
+    return new StudentGraphDTO(studentId, connectedIds);
 }
+
+
 }
