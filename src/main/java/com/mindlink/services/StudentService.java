@@ -101,27 +101,33 @@ public class StudentService {
 
     public List<Student> suggestStudents(String studentId) {
         Optional<Student> optionalStudent = findById(studentId);
-        if (optionalStudent.isEmpty())
-            return List.of();
+        if (optionalStudent.isEmpty()) return List.of();
 
         Student student = optionalStudent.get();
-
         List<String> myGroupIds = student.getStudyGroupsIdList();
         List<String> myInterests = student.getInterests();
         List<Student> allStudents = findAll();
 
-        return allStudents.stream()
-                .filter(s -> !s.getId().equals(studentId))
-                .filter(s -> {
-                    boolean sameGroup = s.getStudyGroupsIdList() != null && myGroupIds != null &&
-                            s.getStudyGroupsIdList().stream().anyMatch(myGroupIds::contains);
+        List<Student> result = new java.util.ArrayList<>();
 
-                    boolean sameInterest = s.getInterests() != null && myInterests != null &&
-                            s.getInterests().stream().anyMatch(myInterests::contains);
+        for (Student s : allStudents) {
+            if (s.getId().equals(studentId)) continue;
 
-                    return sameGroup || sameInterest;
-                })
-                .toList();
+            List<String> commonGroups = (s.getStudyGroupsIdList() != null && myGroupIds != null)
+                ? s.getStudyGroupsIdList().stream().filter(myGroupIds::contains).toList()
+                : List.of();
+
+            List<String> commonInterests = (s.getInterests() != null && myInterests != null)
+                ? s.getInterests().stream().filter(myInterests::contains).toList()
+                : List.of();
+
+            if (!commonGroups.isEmpty() || !commonInterests.isEmpty()) {
+                s.setCommonGroups(commonGroups);
+                s.setCommonInterests(commonInterests);
+                result.add(s);
+            }
+        }
+        return result;
     }
 
 }

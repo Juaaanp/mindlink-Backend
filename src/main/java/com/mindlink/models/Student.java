@@ -35,6 +35,12 @@ public class Student {
     @Transient
     PriorityQueue<HelpRequest> helpRequestsOwnList;
 
+    // NUEVO: campos para coincidencias
+    @Transient
+    List<String> commonGroups;
+    @Transient
+    List<String> commonInterests;
+
     public Student(String id, String name, String email, String password) {
         this.id = id;
         this.name = name;
