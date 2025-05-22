@@ -88,15 +88,40 @@ public class StudentService {
 
     // obtener el subgrafo (estudiante)
     public StudentGraphDTO getSubgraphForStudent(String studentId) {
-    Optional<Student> optionalStudent = findById(studentId);
-    if (optionalStudent.isEmpty()) throw new RuntimeException("Student not found");
+        Optional<Student> optionalStudent = findById(studentId);
+        if (optionalStudent.isEmpty())
+            throw new RuntimeException("Student not found");
 
-    Student student = optionalStudent.get();
-    List<Student> connections = AffinityGraph.getInstance().getConnectionsForStudent(student);
-    List<String> connectedIds = connections.stream().map(Student::getId).collect(Collectors.toList());
+        Student student = optionalStudent.get();
+        List<Student> connections = AffinityGraph.getInstance().getConnectionsForStudent(student);
+        List<String> connectedIds = connections.stream().map(Student::getId).collect(Collectors.toList());
 
-    return new StudentGraphDTO(studentId, connectedIds);
-}
+        return new StudentGraphDTO(studentId, connectedIds);
+    }
 
+    public List<Student> suggestStudents(String studentId) {
+        Optional<Student> optionalStudent = findById(studentId);
+        if (optionalStudent.isEmpty())
+            return List.of();
+
+        Student student = optionalStudent.get();
+
+        List<String> myGroupIds = student.getStudyGroupsIdList();
+        List<String> myInterests = student.getInterests();
+        List<Student> allStudents = findAll();
+
+        return allStudents.stream()
+                .filter(s -> !s.getId().equals(studentId))
+                .filter(s -> {
+                    boolean sameGroup = s.getStudyGroupsIdList() != null && myGroupIds != null &&
+                            s.getStudyGroupsIdList().stream().anyMatch(myGroupIds::contains);
+
+                    boolean sameInterest = s.getInterests() != null && myInterests != null &&
+                            s.getInterests().stream().anyMatch(myInterests::contains);
+
+                    return sameGroup || sameInterest;
+                })
+                .toList();
+    }
 
 }

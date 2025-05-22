@@ -34,7 +34,7 @@ public class StudentController {
 
     @Autowired
     private EmailSenderReactive emailSenderReactive;
-    
+
     // Get the student + his contents in an own list
     @GetMapping("/studentContent/{id}")
     public Student getStudentsAndContents(@PathVariable String id) {
@@ -145,5 +145,11 @@ public class StudentController {
     public ResponseEntity<Student> getStudentByEmail(@PathVariable String email) {
         Optional<Student> student = studentService.findByEmail(email);
         return student.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/suggestions/{id}")
+    public ResponseEntity<List<Student>> suggestStudents(@PathVariable String id) {
+        List<Student> suggestions = studentService.suggestStudents(id);
+        return ResponseEntity.ok(suggestions);
     }
 }
