@@ -63,4 +63,8 @@ public class HelpRequestService {
         }
         return false;
     }
+
+    public boolean deleteIfStudentRemoved (String id){
+        return helpRequestRepository.deleteIfStudentRemoved(id);
+    }
 }

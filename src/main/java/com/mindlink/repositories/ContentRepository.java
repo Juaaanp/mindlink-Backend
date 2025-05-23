@@ -1,6 +1,7 @@
 package com.mindlink.repositories;
 
 import com.mindlink.models.Content;
+import com.mongodb.client.result.DeleteResult;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -37,7 +38,8 @@ public class ContentRepository extends MongoRepositoryImpl<Content> {
         return contents;
     }
 
-    // Cambio de los 3 metodos de filtrado para que funcionen con la logica de un contains y no de un equals para efectos de practicidad al usuario.
+    // Cambio de los 3 metodos de filtrado para que funcionen con la logica de un
+    // contains y no de un equals para efectos de practicidad al usuario.
     public List<Content> findByTitle(String title) {
         Query query = new Query();
         query.addCriteria(Criteria.where("title").regex(".*" + Pattern.quote(title) + ".*", "i"));
@@ -55,5 +57,15 @@ public class ContentRepository extends MongoRepositoryImpl<Content> {
         query.addCriteria(Criteria.where("type").regex(".*" + Pattern.quote(type) + ".*", "i"));
         return mongoTemplate.find(query, Content.class);
     }
+
+    // Borrar uno o mas contenidos que coincidan con el id de el estudiante
+    // eliminado.
+    public boolean deleteIfStudentRemoved(String studentId) {
+        Query query = new Query(Criteria.where("authorId").is(studentId));
+        DeleteResult result = mongoTemplate.remove(query, Content.class);
+        return result.wasAcknowledged() && result.getDeletedCount() > 0;
+    }
+
+    
 
 }

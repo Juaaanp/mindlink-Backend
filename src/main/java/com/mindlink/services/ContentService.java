@@ -2,6 +2,8 @@ package com.mindlink.services;
 
 import com.mindlink.models.Content;
 import com.mindlink.repositories.ContentRepository;
+import com.mindlink.repositories.ValorationRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,9 @@ public class ContentService {
 
     @Autowired
     private ContentRepository contentRepository;
+
+    @Autowired
+    private ValorationRepository valorationRepository;
 
     public List<Content> findByIdStudent(String id) {
         return contentRepository.findByIdStudent(id);
@@ -67,9 +72,14 @@ public class ContentService {
 
     public boolean delete (String id){
         if (contentRepository.findById(id).isPresent()){
+            valorationRepository.deleteIfContentRemoved(id);
             contentRepository.deleteById(id);
             return true;
         }
         return false;
+    }
+
+    public boolean deleteIfStudentRemoved (String id){
+        return contentRepository.deleteIfStudentRemoved(id);
     }
 }

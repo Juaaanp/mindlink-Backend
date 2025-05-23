@@ -9,8 +9,12 @@ import com.mindlink.Util.communication.EmailSenderReactive;
 import com.mindlink.exceptions.NoLoggedUserException;
 import com.mindlink.models.Student;
 import com.mindlink.models.StudyGroup;
+import com.mindlink.services.ChatService;
+import com.mindlink.services.ContentService;
+import com.mindlink.services.HelpRequestService;
 import com.mindlink.services.StudentService;
 import com.mindlink.services.StudyGroupService;
+import com.mindlink.services.ValorationService;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpSession;
@@ -20,7 +24,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/students")

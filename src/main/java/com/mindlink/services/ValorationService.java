@@ -6,6 +6,7 @@ import com.mindlink.repositories.ValorationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,5 +48,24 @@ public class ValorationService {
             return true;
         }
         return false;
+    }
+
+    public List<Valoration> highValorations (){
+        List<Valoration> valorations = valorationRepository.findAll();
+        List<Valoration> highValorations = new ArrayList<>();
+        Byte high = 0;
+        for (Valoration valoration : valorations) {
+            high = (high > valoration.getRate()) ? high : valoration.getRate();
+        }
+        for (Valoration valoration : valorations) {
+            if (high.equals(valoration.getRate())) {
+                highValorations.add(valoration);
+            }
+        }
+        return highValorations;
+    }
+
+    public boolean deleteIfStudentRemoved(String id){
+        return valorationRepository.deleteIfStudentRemoved(id);
     }
 }

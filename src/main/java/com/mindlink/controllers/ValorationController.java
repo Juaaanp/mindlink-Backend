@@ -57,4 +57,10 @@ public class ValorationController {
         boolean deleted = valorationService.delete(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/high")
+    public ResponseEntity<List<Valoration>> getHighValorations(){
+        List<Valoration> highValorations = valorationService.highValorations();
+        return ResponseEntity.ok(highValorations);
+    }
 }
