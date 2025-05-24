@@ -9,4 +9,5 @@ public interface MessageRepository extends MongoRepository<Message, String> {
 
     
     void deleteByChatId(String chatId);
+    
 }

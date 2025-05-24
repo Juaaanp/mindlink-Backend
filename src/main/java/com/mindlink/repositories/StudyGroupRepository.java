@@ -17,6 +17,7 @@ import com.mindlink.Util.AuxiliarClasses.StudyGroupDTO;
 import com.mindlink.Util.SimplyLinkedList.SimplyLinkedList;
 import com.mindlink.models.Student;
 import com.mindlink.models.StudyGroup;
+import com.mongodb.client.result.UpdateResult;
 
 @Repository
 public class StudyGroupRepository extends MongoRepositoryImpl<StudyGroup> {
@@ -172,4 +173,13 @@ public class StudyGroupRepository extends MongoRepositoryImpl<StudyGroup> {
         }
         return grupos;
     }
+
+    // Borrar el id del estudiante eliminado de los grupos de estudio a los cuales pertenecía.
+    public boolean deleteStudentFromGroups(String studentId) {
+    Query query = new Query(Criteria.where("members").in(studentId));
+    Update update = new Update().pull("members", studentId);
+    UpdateResult result = mongoTemplate.updateMulti(query, update, StudyGroup.class);
+    return result.wasAcknowledged();
+}
+
 }

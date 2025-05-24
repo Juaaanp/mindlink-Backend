@@ -1,6 +1,7 @@
 package com.mindlink.repositories;
 
 import com.mindlink.models.Content;
+import com.mindlink.services.ValorationService;
 import com.mongodb.client.result.DeleteResult;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class ContentRepository extends MongoRepositoryImpl<Content> {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private ValorationService valorationService;
 
     public List<Content> findByIdStudent(String id) {
 
@@ -61,10 +65,22 @@ public class ContentRepository extends MongoRepositoryImpl<Content> {
     // Borrar uno o mas contenidos que coincidan con el id de el estudiante
     // eliminado.
     public boolean deleteIfStudentRemoved(String studentId) {
-        Query query = new Query(Criteria.where("authorId").is(studentId));
-        DeleteResult result = mongoTemplate.remove(query, Content.class);
-        return result.wasAcknowledged() && result.getDeletedCount() > 0;
+    // Buscar contenidos creados por el estudiante
+    Query query = new Query(Criteria.where("authorId").is(studentId));
+    List<Content> contentsToDelete = mongoTemplate.find(query, Content.class);
+
+    if (contentsToDelete.isEmpty()) return false;
+
+    // Eliminar las valoraciones asociadas a cada contenido
+    for (Content content : contentsToDelete) {
+        valorationService.deleteIfContentRemoved(content.getId());
     }
+
+    // Eliminar los contenidos
+    DeleteResult result = mongoTemplate.remove(query, Content.class);
+    return result.wasAcknowledged() && result.getDeletedCount() > 0;
+}
+
 
     
 

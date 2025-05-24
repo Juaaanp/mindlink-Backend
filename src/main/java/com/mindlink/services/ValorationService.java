@@ -65,7 +65,11 @@ public class ValorationService {
         return highValorations;
     }
 
-    public boolean deleteIfStudentRemoved(String id){
-        return valorationRepository.deleteIfStudentRemoved(id);
+    public boolean deleteIfStudentRemoved(String StudentId){
+        return valorationRepository.deleteIfStudentRemoved(StudentId);
+    }
+
+    public boolean deleteIfContentRemoved(String contentId){
+        return valorationRepository.deleteIfContentRemoved(contentId);
     }
 }

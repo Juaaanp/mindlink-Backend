@@ -69,7 +69,8 @@ public class ContentService {
     //         return contentRepository.save(existing);
     //     }).orElse(null);
     // }
-
+    
+    // Borrar un contenido con las valoraciones que tenga
     public boolean delete (String id){
         if (contentRepository.findById(id).isPresent()){
             valorationRepository.deleteIfContentRemoved(id);
@@ -79,6 +80,7 @@ public class ContentService {
         return false;
     }
 
+    // Borrar un contenido si el estudiante dueño del contenido es borrado.
     public boolean deleteIfStudentRemoved (String id){
         return contentRepository.deleteIfStudentRemoved(id);
     }

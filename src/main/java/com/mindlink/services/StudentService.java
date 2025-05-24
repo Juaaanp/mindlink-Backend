@@ -26,6 +26,8 @@ public class StudentService {
     @Autowired
     private StudyGroupRepository studyGroupRepository;
 
+    @Autowired StudyGroupService studyGroupService;
+
     @Autowired
     private ContentService contentService;
 
@@ -34,9 +36,6 @@ public class StudentService {
 
     @Autowired 
     private HelpRequestService helpRequestService;
-
-    @Autowired
-    private ChatService chatService;
 
     public void registerStudyGroupsForStudent(Student student) {
         studyGroupRepository.registerStudyGroupsForStudent(student);
@@ -81,13 +80,14 @@ public class StudentService {
         return null;
     }
 
-    // Borrar estudiante y las referencias que tengan los otros objetos de él
-    public boolean delete(String id) {
-        if (studentRepository.findById(id).isPresent()) {
-            contentService.deleteIfStudentRemoved(id);
-            valorationService.deleteIfStudentRemoved(id);
-            helpRequestService.deleteIfStudentRemoved(id);
-            studentRepository.deleteById(id);
+    // Borrar estudiante y las referencias que tengan los otros objetos de él menos los chats ni mensajes.
+    public boolean delete(String studentId) {
+        if (studentRepository.findById(studentId).isPresent()) {
+            contentService.deleteIfStudentRemoved(studentId);
+            valorationService.deleteIfStudentRemoved(studentId);
+            helpRequestService.deleteIfStudentRemoved(studentId);
+            studyGroupService.deleteStudentFromGroups(studentId);
+            studentRepository.deleteById(studentId);
             return true;
         }
         return false;
