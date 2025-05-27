@@ -176,10 +176,9 @@ public class StudyGroupRepository extends MongoRepositoryImpl<StudyGroup> {
 
     // Borrar el id del estudiante eliminado de los grupos de estudio a los cuales pertenecía.
     public boolean deleteStudentFromGroups(String studentId) {
-    Query query = new Query(Criteria.where("members").in(studentId));
-    Update update = new Update().pull("members", studentId);
+    Query query = new Query(Criteria.where("studentIdList").in(studentId));
+    Update update = new Update().pull("studentIdList", studentId);
     UpdateResult result = mongoTemplate.updateMulti(query, update, StudyGroup.class);
     return result.wasAcknowledged();
 }
-
 }
