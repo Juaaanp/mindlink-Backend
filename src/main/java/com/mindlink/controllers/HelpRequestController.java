@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -62,5 +63,11 @@ public class HelpRequestController {
     public ResponseEntity<Void> deleteHelpRequest(@PathVariable String id) {
         boolean deleted = helpRequestService.delete(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/helpRequestReport")
+    public ResponseEntity<Map<String,Integer>> helpRequestReport(){
+        Map<String,Integer> helpRequestReport = helpRequestService.helpRequestReport();
+        return ResponseEntity.ok(helpRequestReport);
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -67,4 +68,10 @@ public class HelpRequestService {
     public boolean deleteIfStudentRemoved (String id){
         return helpRequestRepository.deleteIfStudentRemoved(id);
     }
+
+    public Map<String,Integer> helpRequestReport(){
+        return helpRequestRepository.helpRequestReport();
+    }
+
+
 }

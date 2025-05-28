@@ -51,43 +51,41 @@ public class AffinityGraph {
 
     // Método para exportar el grafo completo como DTO
     public FullGraphDTO getFullGraphDTO() {
-        Set<String> nodeIds = new HashSet<>();
+        Set<Student> uniqueStudents = new HashSet<>();
         List<LinkDTO> links = new ArrayList<>();
 
         for (Map.Entry<Student, List<Student>> entry : graph.entrySet()) {
-            String sourceId = entry.getKey().getId();
-            nodeIds.add(sourceId);
+            Student source = entry.getKey();
+            uniqueStudents.add(source);
 
             for (Student target : entry.getValue()) {
-                String targetId = target.getId();
-                nodeIds.add(targetId);
+                uniqueStudents.add(target);
 
-                // Para evitar duplicados en grafo no dirigido (A-B y B-A)
-                if (sourceId.compareTo(targetId) < 0) {
-                    links.add(new LinkDTO(sourceId, targetId));
+                // Para evitar duplicados en grafo no dirigido
+                if (source.getId().compareTo(target.getId()) < 0) {
+                    links.add(new LinkDTO(source.getId(), target.getId()));
                 }
             }
         }
 
-        List<String> nodes = new ArrayList<>(nodeIds);
-        return new FullGraphDTO(nodes, links);
+        return new FullGraphDTO(new ArrayList<>(uniqueStudents), links);
     }
 
     // Método para exportar el subgrafo como DTO
 
     public FullGraphDTO getSubGraphDTO(Student student) {
-        List<String> nodes = new ArrayList<>();
+        List<Student> nodeList = new ArrayList<>();
         List<LinkDTO> links = new ArrayList<>();
 
         List<Student> connections = graph.getOrDefault(student, List.of());
 
-        nodes.add(student.getId());
+        nodeList.add(student);
         for (Student other : connections) {
-            nodes.add(other.getId());
+            nodeList.add(other);
             links.add(new LinkDTO(student.getId(), other.getId()));
         }
 
-        return new FullGraphDTO(nodes, links);
+        return new FullGraphDTO(nodeList, links);
     }
 
     public void buildGraphFromStudyGroups(List<StudyGroup> studyGroups, Function<String, Student> findStudentById) {
