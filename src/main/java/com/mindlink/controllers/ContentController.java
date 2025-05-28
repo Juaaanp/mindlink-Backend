@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -96,17 +95,12 @@ public class ContentController {
     public ResponseEntity<List<Content>> getHighValorationsContents() {
         List<Valoration> highValorations = valorationService.highValorations();
         List<Content> contents = contentService.findAll();
-        List<Content> highContents = new ArrayList<>();
 
         // Extrae los IDs de contenido de las valoraciones altas
         Set<String> highContentIds = highValorations.stream().map(Valoration::getContent).collect(Collectors.toSet());
 
         // Añade los contenidos cuyo ID esté en ese set
-        for (Content content : contents) {
-            if (highContentIds.contains(content.getId())) {
-                highContents.add(content);
-            }
-        }
+        List<Content> highContents = contents.stream().filter(c -> highContentIds.contains(c.getId())).limit(3).collect(Collectors.toList());
 
         return ResponseEntity.ok(highContents);
     }

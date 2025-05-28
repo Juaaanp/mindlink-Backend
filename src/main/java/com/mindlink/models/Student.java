@@ -10,6 +10,7 @@ import com.mindlink.Util.SimplyLinkedList.SimplyLinkedList;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Document(collection="students")
@@ -47,5 +48,17 @@ public class Student {
         this.email = email;
         this.password = password;
         this.interests = new LinkedList<>();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Student s)) return false;
+        return Objects.equals(id, s.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -4,10 +4,7 @@ import com.mindlink.Util.AuxiliarClasses.StudyGroupDTO;
 import com.mindlink.exceptions.NullOrVoidException;
 import com.mindlink.models.StudyGroup;
 import com.mindlink.repositories.StudyGroupRepository;
-import com.mongodb.client.result.UpdateResult;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

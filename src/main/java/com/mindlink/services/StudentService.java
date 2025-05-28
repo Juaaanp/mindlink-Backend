@@ -11,6 +11,7 @@ import com.mindlink.repositories.StudentRepository;
 import com.mindlink.repositories.StudyGroupRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,6 +37,10 @@ public class StudentService {
 
     @Autowired 
     private HelpRequestService helpRequestService;
+
+    @Autowired
+    @Lazy
+    private AffinityGraphService affinityGraphService;
 
     public void registerStudyGroupsForStudent(Student student) {
         studyGroupRepository.registerStudyGroupsForStudent(student);
@@ -88,6 +93,10 @@ public class StudentService {
             helpRequestService.deleteIfStudentRemoved(studentId);
             studyGroupService.deleteStudentFromGroups(studentId);
             studentRepository.deleteById(studentId);
+
+            // Para actualizar los grafos y que el estudiante eliminado no aparezca
+            affinityGraphService.rebuild();
+
             return true;
         }
         return false;

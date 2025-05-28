@@ -1,6 +1,5 @@
 package com.mindlink.controllers;
 
-import com.mindlink.Util.AffinityGraph.AffinityGraph;
 import com.mindlink.Util.AffinityGraph.FullGraphDTO;
 import com.mindlink.Util.AuxiliarClasses.LoginRequest;
 import com.mindlink.Util.AuxiliarClasses.StudentDTO;
@@ -8,15 +7,9 @@ import com.mindlink.Util.AuxiliarClasses.StudentGraphDTO;
 import com.mindlink.Util.communication.EmailSenderReactive;
 import com.mindlink.exceptions.NoLoggedUserException;
 import com.mindlink.models.Student;
-import com.mindlink.models.StudyGroup;
-import com.mindlink.services.ChatService;
-import com.mindlink.services.ContentService;
-import com.mindlink.services.HelpRequestService;
+import com.mindlink.services.AffinityGraphService;
 import com.mindlink.services.StudentService;
-import com.mindlink.services.StudyGroupService;
-import com.mindlink.services.ValorationService;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +26,10 @@ public class StudentController {
     private StudentService studentService;
 
     @Autowired
-    private StudyGroupService studyGroupService;
+    private EmailSenderReactive emailSenderReactive;
 
     @Autowired
-    private EmailSenderReactive emailSenderReactive;
+    private AffinityGraphService affinityGraphService;
 
     // Get the student + his contents in an own list
     @GetMapping("/studentContent/{id}")
@@ -76,21 +69,6 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getFullGraphForModerator());
     }
 
-    @PostConstruct
-    public void buildAffinityGraphFromGroups() {
-        List<StudyGroup> groups = studyGroupService.findAll();
-        AffinityGraph.getInstance().buildGraphFromStudyGroups(
-                groups,
-                id -> studentService.findById(id).orElse(null) // Aquí convertimos Optional<Student> en Student
-        );
-    }
-
-    @GetMapping("/affinity/rebuild")
-    public ResponseEntity<?> rebuildAffinityGraph() {
-        buildAffinityGraphFromGroups();
-        return ResponseEntity.ok("Graph rebuilt");
-    }
-
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpSession session) {
         session.invalidate();
@@ -101,8 +79,12 @@ public class StudentController {
     @PostMapping("/register")
     public ResponseEntity<Student> register(@RequestBody Student student) {
         Student savedStudent = studentService.save(student);
+
         // Para asignarlo automáticamente a los grupos de estudio
         studentService.registerStudyGroupsForStudent(savedStudent);
+
+        // Para actualizar los grafos de los grupos de estudio el cual el estudiante se registre
+        affinityGraphService.rebuild();
         // Se ejecuta de forma asíncrona, no bloquea la respuesta
         emailSenderReactive.sendEmail(savedStudent.getName(), savedStudent.getInterests(), savedStudent.getEmail());
 
