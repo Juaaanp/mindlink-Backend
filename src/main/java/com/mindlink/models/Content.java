@@ -13,7 +13,7 @@ import com.mindlink.Util.SimplyLinkedList.SimplyLinkedList;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "contents")
-public class Content {
+public class Content implements Comparable<Content> {
     @Id
     private String id;
     private String title;
@@ -26,4 +26,9 @@ public class Content {
     
     @Transient
     private SimplyLinkedList<Valoration> valorationsOwnList;
+
+    @Override
+    public int compareTo(Content otro) {
+       return this.type.compareToIgnoreCase(otro.type); // Orden alfabético
+    }
 }

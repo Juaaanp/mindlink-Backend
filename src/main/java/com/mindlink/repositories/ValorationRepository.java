@@ -3,10 +3,10 @@ package com.mindlink.repositories;
 import java.util.List;
 
 import org.springframework.data.mongodb.core.query.Query;
-
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 
+import com.mindlink.Util.SimplyLinkedList.SimplyLinkedList;
 import com.mindlink.models.Valoration;
 import com.mongodb.client.result.DeleteResult;
 
@@ -18,7 +18,9 @@ public class ValorationRepository extends MongoRepositoryImpl<Valoration>{
 
     public List<Valoration> findByContentId(String contentId) {
         Query query = new Query(Criteria.where("content").is(contentId));
-        return mongoTemplate.find(query, Valoration.class);
+        List<Valoration> list1 = mongoTemplate.find(query, Valoration.class);
+        SimplyLinkedList<Valoration> sll = SimplyLinkedList.fromList(list1);
+        return sll.toList();
     }
 
     // Borrar una o mas valoraciones que coincidan con el id (creadas por él) de el estudiante eliminado.

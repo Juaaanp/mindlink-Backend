@@ -1,5 +1,6 @@
 package com.mindlink.repositories;
 
+import com.mindlink.Util.BinarySearchTree.BinarySearchTree;
 import com.mindlink.models.Content;
 import com.mindlink.services.ValorationService;
 import com.mongodb.client.result.DeleteResult;
@@ -32,14 +33,17 @@ public class ContentRepository extends MongoRepositoryImpl<Content> {
 
     public List<Content> findWithAuthorName() {
         List<Content> contents = mongoTemplate.findAll(Content.class);
+        BinarySearchTree<Content> bst = new BinarySearchTree<>();
 
         for (Content content : contents) {
             // Buscar el autor por ID
             studentRepository.findById(content.getAuthorId()).ifPresent(author -> {
                 content.setAuthorName(author.getName());
             });
+            bst.insert(content);
         }
-        return contents;
+        return bst.toSortedList();
+        // return contents;
     }
 
     // Cambio de los 3 metodos de filtrado para que funcionen con la logica de un
